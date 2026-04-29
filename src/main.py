@@ -1,82 +1,46 @@
-import pandas as pd
+from data_loader import load_data
+from cleaning import clean_data
+from transformation import transform_data
 
-# STAGE 1: Data Loading and Initial Exploration
-deliveries_df = pd.read_csv("../data/deliveries.csv")
-matches_df = pd.read_csv("../data/matches.csv")
+from analysis import *
 
-print("Datasets are loaded successfully.")
+# STAGE 1: Data Ingestion
+deliveries_df, matches_df = load_data()
 
-# STAGE 2: Data Validation and Cleaning
-print("Checking for missing values: ")
-
-print("Deliveries missing values:")
-print(deliveries_df.isnull().sum())
-
-print("Matches missing values:")
-print(matches_df.isnull().sum())
-
-print("Validating match id alignment: ")
-
-deliveries_match_ids = set(deliveries_df["match_id"].unique())
-matches_ids = set(matches_df["id"].unique())
-
-missing_in_matches = deliveries_match_ids - matches_ids
-missing_in_deliveries = matches_ids - deliveries_match_ids
-
-print(f"\nMatch IDs in deliveries but not in matches: {len(missing_in_matches)}")
-print(f"Match IDs in matches but not in deliveries: {len(missing_in_deliveries)}")
-
-print("Validating data tyoes: ")
-
-print("\nDeliveries Data Types:\n")
-print(deliveries_df.dtypes)
-
-print("\nMatches Data Types:\n")
-print(matches_df.dtypes)
-
-print("Performing basic cleaning: ")
-
-matches_df["winner"] = matches_df["winner"].fillna("No Result")
-matches_df["player_of_match"] = matches_df["player_of_match"].fillna("Not Awarded")
-
-print("\nBasic cleaning completed.")
-
-print("Final dataframe shapes: ")
-
-print(f"\nDeliveries Shape: {deliveries_df.shape}")
-print(f"Matches Shape: {matches_df.shape}")
+# STAGE 2: Data Cleaning and Validation
+deliveries_df, matches_df = clean_data(
+    deliveries_df,
+    matches_df
+)
 
 # STAGE 3: Data Transformation
-print("Starting data transformation: ")
-
-deliveries_df.columns = deliveries_df.columns.str.lower().str.strip()
-matches_df.columns = matches_df.columns.str.lower().str.strip()
-
-print("\nColumn names standardized.")
-
-deliveries_df["total_runs"] = (
-    deliveries_df["batsman_runs"] +
-    deliveries_df["extra_runs"]
+merged_df = transform_data(
+    deliveries_df,
+    matches_df
 )
 
-print("\nNew column 'total_runs' created.")
+print("\nPipeline execution completed successfully. Starting analysis...\n")
 
-merged_df = deliveries_df.merge(
-    matches_df,
-    left_on="match_id",
-    right_on="id",
-    how="inner"
-)
+# Stage 4: Core Analysis
 
-print("\nDatasets merged successfully.")
-
-print("Merged dataset info: ")
-
-print("\nMerged Shape:")
-print(merged_df.shape)
-
-print("\nMerged Columns:")
-print(merged_df.columns)
-
-print("\nFirst 5 Rows:")
-print(merged_df.head())
+total_runs_per_match(merged_df)
+runs_per_team_per_match(merged_df)
+top_10_batters(merged_df)
+strike_rate(merged_df)
+top_bowlers_by_economy(merged_df)
+most_consistent_batters(merged_df)
+highest_individual_score(merged_df)
+boundary_analysis(merged_df)
+boundary_percentage(merged_df)
+dot_ball_analysis(merged_df)
+runs_per_over(merged_df)
+powerplay_performance(merged_df)
+death_overs_performance(merged_df)
+run_distribution_per_inning(merged_df)
+toss_impact_analysis(merged_df)
+toss_match_win_analysis(merged_df)
+player_of_match_contribution(merged_df)
+venue_wise_analysis(merged_df)
+city_wise_scoring(merged_df)
+season_wise_run_trends(merged_df)
+winning_team_analysis(merged_df)
