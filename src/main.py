@@ -1,8 +1,8 @@
 from data_loader import load_data
 from cleaning import clean_data
 from transformation import transform_data
-
 from analysis import *
+from insights import generate_insights
 
 # STAGE 1: Data Ingestion
 deliveries_df, matches_df = load_data()
@@ -22,7 +22,6 @@ merged_df = transform_data(
 print("\nPipeline execution completed successfully. Starting analysis...\n")
 
 # Stage 4: Core Analysis
-
 total_runs_per_match(merged_df)
 runs_per_team_per_match(merged_df)
 top_10_batters(merged_df)
@@ -44,3 +43,6 @@ venue_wise_analysis(merged_df)
 city_wise_scoring(merged_df)
 season_wise_run_trends(merged_df)
 winning_team_analysis(merged_df)
+
+# Stage 5: Derived Insights
+generate_insights(merged_df)
