@@ -4,6 +4,7 @@ from transformation import transform_data
 from analysis import *
 from insights import generate_insights
 from reporting import *
+from export import export_reports
 
 # STAGE 1: Data Ingestion
 deliveries_df, matches_df = load_data()
@@ -54,3 +55,6 @@ top_bowlers_report(merged_df)
 venue_report(merged_df)
 team_performance_report(merged_df)
 season_report(merged_df)
+
+# STAGE 7: Data Export
+export_reports(merged_df)
